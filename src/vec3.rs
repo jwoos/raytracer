@@ -1,9 +1,7 @@
 use std::ops;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-struct Vec3 (
-    f64, f64, f64
-);
+struct Vec3(f64, f64, f64);
 
 impl Vec3 {
     fn new(x: f64, y: f64, z: f64) -> Vec3 {
@@ -39,7 +37,7 @@ impl Vec3 {
             u.1 * v.2 - u.2 * v.1,
             u.2 * v.0 - u.0 * v.2,
             u.0 * v.1 - u.1 * v.0,
-            )
+        )
     }
 
     fn unit(&self) -> Vec3 {
@@ -56,11 +54,7 @@ impl ops::Add for Vec3 {
     type Output = Self;
 
     fn add(self, other: Self) -> Self::Output {
-        Vec3::new(
-            self.0 + other.0,
-            self.1 + other.1,
-            self.2 + other.2,
-        )
+        Vec3::new(self.0 + other.0, self.1 + other.1, self.2 + other.2)
     }
 }
 
@@ -76,11 +70,7 @@ impl ops::Sub for Vec3 {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self::Output {
-        Vec3::new(
-            self.0 - other.0,
-            self.1 - other.1,
-            self.2 - other.2,
-        )
+        Vec3::new(self.0 - other.0, self.1 - other.1, self.2 - other.2)
     }
 }
 
@@ -96,11 +86,7 @@ impl ops::Mul for Vec3 {
     type Output = Self;
 
     fn mul(self, other: Self) -> Self::Output {
-        Vec3::new(
-            self.0 * other.0,
-            self.1 * other.1,
-            self.2 * other.2,
-        )
+        Vec3::new(self.0 * other.0, self.1 * other.1, self.2 * other.2)
     }
 }
 
@@ -116,11 +102,7 @@ impl ops::Div for Vec3 {
     type Output = Self;
 
     fn div(self, other: Self) -> Self::Output {
-        Vec3::new(
-            self.0 / other.0,
-            self.1 / other.1,
-            self.2 / other.2,
-        )
+        Vec3::new(self.0 / other.0, self.1 / other.1, self.2 / other.2)
     }
 }
 
@@ -138,11 +120,7 @@ impl ops::Add<f64> for Vec3 {
     type Output = Vec3;
 
     fn add(self, other: f64) -> Self::Output {
-        Vec3::new(
-            self.0 + other,
-            self.1 + other,
-            self.2 + other,
-        )
+        Vec3::new(self.0 + other, self.1 + other, self.2 + other)
     }
 }
 
@@ -158,11 +136,7 @@ impl ops::Sub<f64> for Vec3 {
     type Output = Vec3;
 
     fn sub(self, other: f64) -> Self::Output {
-        Vec3::new(
-            self.0 - other,
-            self.1 - other,
-            self.2 - other,
-        )
+        Vec3::new(self.0 - other, self.1 - other, self.2 - other)
     }
 }
 
@@ -178,11 +152,7 @@ impl ops::Mul<f64> for Vec3 {
     type Output = Vec3;
 
     fn mul(self, other: f64) -> Self::Output {
-        Vec3::new(
-            self.0 * other,
-            self.1 * other,
-            self.2 * other,
-        )
+        Vec3::new(self.0 * other, self.1 * other, self.2 * other)
     }
 }
 
@@ -198,11 +168,7 @@ impl ops::Div<f64> for Vec3 {
     type Output = Vec3;
 
     fn div(self, other: f64) -> Self::Output {
-        Vec3::new(
-            self.0 / other,
-            self.1 / other,
-            self.2 / other,
-        )
+        Vec3::new(self.0 / other, self.1 / other, self.2 / other)
     }
 }
 
