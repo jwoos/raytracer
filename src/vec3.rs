@@ -25,7 +25,7 @@ impl Vec3 {
     }
 
     fn length_squared(&self) -> f64 {
-        self.0 * self.0 + self.1 + self.1 + self.2 * self.2
+        self.0 * self.0 + self.1 * self.1 + self.2 * self.2
     }
 
     fn dot(u: &Vec3, v: &Vec3) -> f64 {
