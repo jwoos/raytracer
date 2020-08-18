@@ -47,6 +47,9 @@ impl Vec3 {
     }
 }
 
+type Point = Vec3;
+type Color = Vec3;
+
 // Operations with Vec3
 
 impl ops::Add for Vec3 {
