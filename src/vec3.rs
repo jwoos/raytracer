@@ -1,38 +1,38 @@
 use std::ops;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-struct Vec3(f64, f64, f64);
+pub struct Vec3(f64, f64, f64);
 
 impl Vec3 {
-    fn new(x: f64, y: f64, z: f64) -> Vec3 {
+    pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         return Vec3(x, y, z);
     }
 
-    fn x(&self) -> f64 {
+    pub fn x(&self) -> f64 {
         self.0
     }
 
-    fn y(&self) -> f64 {
+    pub fn y(&self) -> f64 {
         self.1
     }
 
-    fn z(&self) -> f64 {
+    pub fn z(&self) -> f64 {
         self.2
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
 
-    fn length_squared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.0 * self.0 + self.1 * self.1 + self.2 * self.2
     }
 
-    fn dot(u: &Vec3, v: &Vec3) -> f64 {
+    pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
         u.0 * v.0 + u.1 * v.1 + u.2 * v.2
     }
 
-    fn cross_product(u: &Vec3, v: &Vec3) -> Vec3 {
+    pub fn cross_product(u: &Vec3, v: &Vec3) -> Vec3 {
         Vec3::new(
             u.1 * v.2 - u.2 * v.1,
             u.2 * v.0 - u.0 * v.2,
@@ -40,13 +40,13 @@ impl Vec3 {
         )
     }
 
-    fn unit(&self) -> Vec3 {
+    pub fn unit(&self) -> Vec3 {
         *self / self.length()
     }
 }
 
-type Point = Vec3;
-type Color = Vec3;
+pub type Point = Vec3;
+pub type Color = Vec3;
 
 // Operations with Vec3
 

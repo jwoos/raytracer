@@ -1,3 +1,10 @@
+mod ray;
+mod vec3;
+
+fn ray_color(r: &ray::Ray) -> vec3::Color {
+    vec3::Vec3::new(0.0, 0.0, 0.0)
+}
+
 fn main() {
     let width = 256;
     let height = 256;

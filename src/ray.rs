@@ -1,4 +1,6 @@
-struct Ray {
+use crate::vec3;
+
+pub struct Ray {
     origin: vec3::Point,
     direction: vec3::Vec3,
 }
@@ -10,12 +12,12 @@ struct Ray {
  * t is a real number - the ray parameter
  */
 impl Ray {
-    fn new(origin: vec3::Point, direction: vec3::Vec3) -> Ray {
-        Ray {origin, direction}
+    pub fn new(origin: vec3::Point, direction: vec3::Vec3) -> Ray {
+        Ray { origin, direction }
     }
 
     // TODO make operations commutative and move t in front
-    fn at(&self, f64 t) -> {
+    pub fn at(&self, t: f64) -> vec3::Point {
         self.origin + (self.direction * t)
     }
 }
