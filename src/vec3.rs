@@ -116,27 +116,42 @@ impl ops::DivAssign for Vec3 {
 
 // Operations with f64
 
-impl ops::Add<f64> for Vec3 {
-    type Output = Vec3;
+macro_rules! expr {
+    ($e:expr) => {
+        $e
+    };
+}
 
-    fn add(self, other: f64) -> Self::Output {
-        Vec3::new(self.0 + other, self.1 + other, self.2 + other)
+macro_rules! operations {
+    ($vector:ty, $scalar:ty, $trait_for_scalar:ty, $trait_for_vector:ty, $op_fn:ident, $op:tt) => {
+        impl $trait_for_scalar for $vector {
+            type Output = $vector;
+
+            fn $op_fn(self, other: $scalar) -> Self::Output {
+                <$vector>::new(expr!(self.0 $op other), expr!(self.1 $op other), expr!(self.2 $op other))
+            }
+        }
+
+        impl $trait_for_vector for $scalar {
+            type Output = $vector;
+
+            fn $op_fn(self, other: $vector) -> Self::Output {
+                <$vector>::new(expr!(other.0 $op self), expr!(other.1 $op self), expr!(other.2 $op self))
+            }
+        }
     }
 }
+
+operations!(Vec3, f64, ops::Add<f64>, ops::Add<Vec3>, add, +);
+operations!(Vec3, f64, ops::Sub<f64>, ops::Sub<Vec3>, sub, -);
+operations!(Vec3, f64, ops::Mul<f64>, ops::Mul<Vec3>, mul, *);
+operations!(Vec3, f64, ops::Div<f64>, ops::Div<Vec3>, div, /);
 
 impl ops::AddAssign<f64> for Vec3 {
     fn add_assign(&mut self, other: f64) {
         self.0 += other;
         self.1 += other;
         self.2 += other;
-    }
-}
-
-impl ops::Sub<f64> for Vec3 {
-    type Output = Vec3;
-
-    fn sub(self, other: f64) -> Self::Output {
-        Vec3::new(self.0 - other, self.1 - other, self.2 - other)
     }
 }
 
@@ -148,27 +163,11 @@ impl ops::SubAssign<f64> for Vec3 {
     }
 }
 
-impl ops::Mul<f64> for Vec3 {
-    type Output = Vec3;
-
-    fn mul(self, other: f64) -> Self::Output {
-        Vec3::new(self.0 * other, self.1 * other, self.2 * other)
-    }
-}
-
 impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, other: f64) {
         self.0 *= other;
         self.1 *= other;
         self.2 *= other;
-    }
-}
-
-impl ops::Div<f64> for Vec3 {
-    type Output = Vec3;
-
-    fn div(self, other: f64) -> Self::Output {
-        Vec3::new(self.0 / other, self.1 / other, self.2 / other)
     }
 }
 

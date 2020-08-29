@@ -2,6 +2,8 @@ mod ray;
 mod vec3;
 
 fn ray_color(r: &ray::Ray) -> vec3::Color {
+    let unit_direction = r.getDirection().unit();
+    let t = 0.5 * (unit_direction.y() + 1.0);
     vec3::Vec3::new(0.0, 0.0, 0.0)
 }
 

@@ -16,8 +16,15 @@ impl Ray {
         Ray { origin, direction }
     }
 
-    // TODO make operations commutative and move t in front
+    pub fn getOrigin(&self) -> &vec3::Point {
+        &self.origin
+    }
+
+    pub fn getDirection(&self) -> &vec3::Vec3 {
+        &self.direction
+    }
+
     pub fn at(&self, t: f64) -> vec3::Point {
-        self.origin + (self.direction * t)
+        self.origin + (t * self.direction)
     }
 }
