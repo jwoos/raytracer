@@ -16,11 +16,11 @@ impl Ray {
         Ray { origin, direction }
     }
 
-    pub fn getOrigin(&self) -> &vec3::Point {
+    pub fn get_origin(&self) -> &vec3::Point {
         &self.origin
     }
 
-    pub fn getDirection(&self) -> &vec3::Vec3 {
+    pub fn get_direction(&self) -> &vec3::Vec3 {
         &self.direction
     }
 
