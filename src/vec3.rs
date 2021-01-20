@@ -1,9 +1,28 @@
+use rand;
 use std::ops;
+
+use crate::utility;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3(f64, f64, f64);
 
 impl Vec3 {
+    pub fn random() -> Vec3 {
+        Vec3::new(
+            rand::random::<f64>(),
+            rand::random::<f64>(),
+            rand::random::<f64>(),
+        )
+    }
+
+    pub fn random_rng(min: f64, max: f64) -> Vec3 {
+        Vec3::new(
+            utility::random(min, max),
+            utility::random(min, max),
+            utility::random(min, max),
+        )
+    }
+
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         return Vec3(x, y, z);
     }
