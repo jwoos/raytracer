@@ -71,6 +71,19 @@ impl Vec3 {
         self.0 * self.0 + self.1 * self.1 + self.2 * self.2
     }
 
+    pub fn near_zero(&self) -> bool {
+        let s = 1.0e-8;
+        return (self.0.abs() < s) && (self.1.abs() < s) && (self.2.abs() < s);
+    }
+
+    pub fn unit(&self) -> Vec3 {
+        *self / self.length()
+    }
+
+    pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+        *v - 2.0 * Vec3::dot(v, n) * *n
+    }
+
     pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
         u.0 * v.0 + u.1 * v.1 + u.2 * v.2
     }
@@ -81,10 +94,6 @@ impl Vec3 {
             u.2 * v.0 - u.0 * v.2,
             u.0 * v.1 - u.1 * v.0,
         )
-    }
-
-    pub fn unit(&self) -> Vec3 {
-        *self / self.length()
     }
 }
 

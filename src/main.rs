@@ -24,12 +24,13 @@ fn ray_color(r: &Ray, world: &HittableList, depth: i16) -> Color {
     if hit {
         let record = record_opt.unwrap();
         let target = record.point + Vec3::random_in_hemisphere(&record.normal);
-        return 0.5
-            * ray_color(
-                &Ray::new(record.point, target - record.point),
-                world,
-                depth - 1,
-            );
+
+        let (scattered, attenuation, scattered_ray) = record.material.scatter(r, &record);
+        if scattered {
+            return attenuation * ray_color(&scattered_ray, world, depth - 1);
+        } else {
+            return Color::new(0.0, 0.0, 0.0);
+        }
     }
 
     let unit_direction = r.get_direction().unit();
@@ -61,9 +62,32 @@ fn main() {
     let max_bounces = 50;
 
     // world
+    let material_ground = Rc::new(objects::Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center = Rc::new(objects::Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left = Rc::new(objects::Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
+    let material_right = Rc::new(objects::Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+
     let mut world = HittableList::new();
-    world.add(Rc::new(Sphere::new(Point::new(0.0, 0.0, -1.0), 0.5)));
-    world.add(Rc::new(Sphere::new(Point::new(0.0, -100.5, -1.0), 100.0)));
+    world.add(Rc::new(Sphere::new(
+        Point::new(0.0, -100.5, -1.0),
+        100.0,
+        material_ground.clone(),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point::new(0.0, 0.0, -1.0),
+        0.5,
+        material_center.clone(),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point::new(-1.0, 0.0, -1.0),
+        0.5,
+        material_left.clone(),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point::new(1.0, 0.0, -1.0),
+        0.5,
+        material_right.clone(),
+    )));
 
     // camera
     let camera = Camera::new();

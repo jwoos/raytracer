@@ -3,20 +3,32 @@ use crate::vec3::{Color, Point, Vec3};
 use std::rc::Rc;
 use std::vec::Vec;
 
+pub trait Material {
+    fn scatter(&self, r: &Ray, record: &HitRecord) -> (bool, Color, Ray);
+}
+
 pub struct HitRecord {
     pub point: Point,
     pub normal: Vec3,
     pub t: f64,
     pub front_facing: bool,
+    pub material: Rc<dyn Material>,
 }
 
 impl HitRecord {
-    pub fn new(point: Point, normal: Vec3, t: f64, front_facing: bool) -> HitRecord {
+    pub fn new(
+        point: Point,
+        normal: Vec3,
+        t: f64,
+        front_facing: bool,
+        material: Rc<dyn Material>,
+    ) -> HitRecord {
         HitRecord {
             point,
             normal,
             t,
             front_facing,
+            material,
         }
     }
 
@@ -77,5 +89,64 @@ impl HittableList {
         }
 
         return (hit, record);
+    }
+}
+
+pub struct Lambertian {
+    albedo: Color,
+}
+
+impl Lambertian {
+    pub fn new(a: Color) -> Lambertian {
+        Lambertian { albedo: a }
+    }
+}
+
+impl Material for Lambertian {
+    fn scatter(&self, r: &Ray, record: &HitRecord) -> (bool, Color, Ray) {
+        let mut scatter_direction = record.normal + Vec3::random_unit_vector();
+        if scatter_direction.near_zero() {
+            scatter_direction = record.normal.clone();
+        }
+
+        let ray = Ray::new(record.point, scatter_direction);
+        let attenuation = self.albedo.clone();
+
+        return (true, attenuation, ray);
+    }
+}
+
+pub struct Metal {
+    albedo: Color,
+    fuzz: f64,
+}
+
+impl Metal {
+    pub fn new(a: Color, f: f64) -> Metal {
+        let mut fuzz = f;
+        if fuzz > 1.0 {
+            fuzz = 1.0;
+        }
+        Metal {
+            albedo: a,
+            fuzz: fuzz,
+        }
+    }
+}
+
+impl Material for Metal {
+    fn scatter(&self, r: &Ray, record: &HitRecord) -> (bool, Color, Ray) {
+        let reflected = Vec3::reflect(&r.get_direction().unit(), &record.normal);
+        let scattered = Ray::new(
+            record.point,
+            reflected + self.fuzz * Vec3::random_unit_vector(),
+        );
+        let attenuation = self.albedo.clone();
+
+        return (
+            Vec3::dot(scattered.get_direction(), &record.normal) > 0.0,
+            attenuation,
+            scattered,
+        );
     }
 }
