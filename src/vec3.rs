@@ -48,6 +48,15 @@ impl Vec3 {
 pub type Point = Vec3;
 pub type Color = Vec3;
 
+// Unary
+impl ops::Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Vec3::new(-self.0, -self.1, -self.2)
+    }
+}
+
 // Operations with Vec3
 
 impl ops::Add for Vec3 {
