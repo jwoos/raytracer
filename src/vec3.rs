@@ -23,6 +23,30 @@ impl Vec3 {
         )
     }
 
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random_rng(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+
+            return p;
+        }
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        return Vec3::random_in_unit_sphere().unit();
+    }
+
+    pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
+        let in_unit_sphere = Vec3::random_in_unit_sphere();
+        if Vec3::dot(&in_unit_sphere, &normal) > 0.0 {
+            return in_unit_sphere;
+        } else {
+            return -in_unit_sphere;
+        }
+    }
+
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         return Vec3(x, y, z);
     }

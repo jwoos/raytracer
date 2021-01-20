@@ -15,10 +15,21 @@ use objects::{HitRecord, HittableList};
 use ray::Ray;
 use sphere::Sphere;
 
-fn ray_color(r: &Ray, world: &HittableList) -> Color {
-    let (hit, record) = world.hit(r, (0.0, std::f64::INFINITY));
+fn ray_color(r: &Ray, world: &HittableList, depth: i16) -> Color {
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
+
+    let (hit, record_opt) = world.hit(r, (0.001, std::f64::INFINITY));
     if hit {
-        return 0.5 * (record.unwrap().normal + Color::new(1.0, 1.0, 1.0));
+        let record = record_opt.unwrap();
+        let target = record.point + Vec3::random_in_hemisphere(&record.normal);
+        return 0.5
+            * ray_color(
+                &Ray::new(record.point, target - record.point),
+                world,
+                depth - 1,
+            );
     }
 
     let unit_direction = r.get_direction().unit();
@@ -46,7 +57,8 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as i64;
-    let samples_per_pixel = 1000;
+    let samples_per_pixel = 100;
+    let max_bounces = 50;
 
     // world
     let mut world = HittableList::new();
@@ -68,13 +80,15 @@ fn main() {
                 let u = (i as f64 + rand::random::<f64>()) / (image_width - 1) as f64;
                 let v = (j as f64 + rand::random::<f64>()) / (image_height - 1) as f64;
                 let ray = camera.get_ray(u, v);
-                pixel_color += ray_color(&ray, &world);
+                pixel_color += ray_color(&ray, &world, max_bounces);
             }
 
             let scale = 1.0 / samples_per_pixel as f64;
-            let r = pixel_color.x() * scale;
-            let g = pixel_color.y() * scale;
-            let b = pixel_color.z() * scale;
+
+            // divide by scale and gamma correct
+            let r = (pixel_color.x() * scale).sqrt();
+            let g = (pixel_color.y() * scale).sqrt();
+            let b = (pixel_color.z() * scale).sqrt();
 
             print!(
                 "{} {} {}\n",
