@@ -116,7 +116,7 @@ fn main() {
     for j in (0..image_height).rev() {
         eprintln!("Scanline {}", j);
 
-        for i in (0..image_width).rev() {
+        for i in 0..image_width {
             let mut pixel_color = Color::new(0.0, 0.0, 0.0);
 
             for s in 0..samples_per_pixel {
