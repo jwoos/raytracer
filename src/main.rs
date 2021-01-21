@@ -62,35 +62,54 @@ fn main() {
     let max_bounces = 50;
 
     // world
-    let material_ground = Rc::new(objects::Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Rc::new(objects::Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let material_left = Rc::new(objects::Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
-    let material_right = Rc::new(objects::Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
-
+    let R = (std::f64::consts::PI / 4.0).cos();
     let mut world = HittableList::new();
+
+    let material_left = Rc::new(objects::Lambertian::new(Color::new(0.0, 0.0, 1.0)));
+    let material_right = Rc::new(objects::Lambertian::new(Color::new(1.0, 0.0, 0.0)));
+
     world.add(Rc::new(Sphere::new(
-        Point::new(0.0, -100.5, -1.0),
-        100.0,
-        material_ground.clone(),
+        Point::new(-R, 0.0, -1.0),
+        R,
+        material_left,
     )));
     world.add(Rc::new(Sphere::new(
-        Point::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center.clone(),
+        Point::new(R, 0.0, -1.0),
+        R,
+        material_right,
     )));
-    world.add(Rc::new(Sphere::new(
-        Point::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left.clone(),
-    )));
-    world.add(Rc::new(Sphere::new(
-        Point::new(1.0, 0.0, -1.0),
-        0.5,
-        material_right.clone(),
-    )));
+
+    /*
+     *    let material_ground = Rc::new(objects::Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+     *    let material_center = Rc::new(objects::Lambertian::new(Color::new(0.1, 0.2, 0.5)));
+     *    let material_left = Rc::new(objects::Dielectric::new(1.5));
+     *    let material_right = Rc::new(objects::Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
+     *
+     *    let mut world = HittableList::new();
+     *    world.add(Rc::new(Sphere::new(
+     *        Point::new(0.0, -100.5, -1.0),
+     *        100.0,
+     *        material_ground.clone(),
+     *    )));
+     *    world.add(Rc::new(Sphere::new(
+     *        Point::new(0.0, 0.0, -1.0),
+     *        0.5,
+     *        material_center.clone(),
+     *    )));
+     *    world.add(Rc::new(Sphere::new(
+     *        Point::new(-1.0, 0.0, -1.0),
+     *        0.5,
+     *        material_right.clone(),
+     *    )));
+     *    world.add(Rc::new(Sphere::new(
+     *        Point::new(1.0, 0.0, -1.0),
+     *        0.5,
+     *        material_left.clone(),
+     *    )));
+     */
 
     // camera
-    let camera = Camera::new();
+    let camera = Camera::new(90.0, aspect_ratio);
 
     print!("P3\n{} {}\n255\n", image_width, image_height);
 

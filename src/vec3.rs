@@ -84,6 +84,18 @@ impl Vec3 {
         *v - 2.0 * Vec3::dot(v, n) * *n
     }
 
+    pub fn refract(v: &Vec3, n: &Vec3, e: f64) -> Vec3 {
+        let mut cos_theta = Vec3::dot(&-(*v), n);
+        if (cos_theta > 1.0) {
+            cos_theta = 1.0;
+        }
+
+        let perpendicular = e * (*v + cos_theta * *n);
+        let parallel = -(1.0 - perpendicular.length_squared()).abs().sqrt() * *n;
+
+        return perpendicular + parallel;
+    }
+
     pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
         u.0 * v.0 + u.1 * v.1 + u.2 * v.2
     }

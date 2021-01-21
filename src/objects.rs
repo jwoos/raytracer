@@ -139,7 +139,7 @@ impl Material for Metal {
         let reflected = Vec3::reflect(&r.get_direction().unit(), &record.normal);
         let scattered = Ray::new(
             record.point,
-            reflected + self.fuzz * Vec3::random_unit_vector(),
+            reflected + self.fuzz * Vec3::random_in_unit_sphere(),
         );
         let attenuation = self.albedo.clone();
 
@@ -148,5 +148,53 @@ impl Material for Metal {
             attenuation,
             scattered,
         );
+    }
+}
+
+pub struct Dielectric {
+    ir: f64,
+}
+
+impl Dielectric {
+    pub fn new(ir: f64) -> Dielectric {
+        Dielectric { ir: ir }
+    }
+
+    pub fn reflectance(cos: f64, refraction_index: f64) -> f64 {
+        let mut r0 = (1.0 - refraction_index) / (1.0 + refraction_index);
+        r0 *= r0;
+        r0 + (1.0 - r0) * (1.0 - cos).powf(5.0)
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, r: &Ray, record: &HitRecord) -> (bool, Color, Ray) {
+        let attenuation = Color::new(1.0, 1.0, 1.0);
+        let mut refraction_ratio = self.ir;
+        if record.front_facing {
+            refraction_ratio = 1.0 / self.ir;
+        }
+
+        let unit_direction = r.get_direction().unit();
+        let mut cos_theta = Vec3::dot(&-unit_direction, &record.normal);
+        if cos_theta > 1.0 {
+            cos_theta = 1.0;
+        }
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+        let cannot_refract = (refraction_ratio * sin_theta) > 1.0;
+        let mut direction = Vec3::new(0.0, 0.0, 0.0);
+
+        if cannot_refract
+            || Dielectric::reflectance(cos_theta, refraction_ratio) > rand::random::<f64>()
+        {
+            direction = Vec3::reflect(&unit_direction, &record.normal);
+        } else {
+            direction = Vec3::refract(&unit_direction, &record.normal, refraction_ratio);
+        }
+
+        let scattered = Ray::new(record.point, direction);
+
+        return (true, attenuation, scattered);
     }
 }
